@@ -1,0 +1,30 @@
+{
+  "name": "cryptographie-3ibc-esgi",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/maxime-lalo/cryptographie-3ibc-esgi.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/maxime-lalo/cryptographie-3ibc-esgi/issues"
+  },
+  "homepage": "https://github.com/maxime-lalo/cryptographie-3ibc-esgi#readme",
+  "dependencies": {
+    "aes-js": "^3.1.2",
+    "bootstrap": "^4.6.0",
+    "crypto-js": "^4.0.0",
+    "express": "^4.17.1",
+    "javascript-blowfish": "^1.0.4",
+    "js-sha3": "^0.8.0",
+    "node-rsa": "^1.1.1",
+    "ripemd160": "^2.0.2",
+    "sha2": "^1.0.2"
+  }
+}
