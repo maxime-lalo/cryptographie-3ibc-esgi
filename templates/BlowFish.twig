@@ -1,0 +1,36 @@
+{% extends 'template.twig' %}
+{% block form %}
+    <div class="form-group">
+        <label for="blowfish">Votre texte</label>
+        {% if plain is defined %}
+            <input type="text" class="form-control" id="blowfish" name="blowfish" value="{{ plain }}">
+        {% else %}
+            <input type="text" class="form-control" id="blowfish" name="blowfish">
+        {% endif %}
+    </div>
+
+    <div class="form-group">
+        <label for="secret_key">Votre clé</label>
+        {% if plain is defined %}
+            <input type="text" class="form-control" id="secret_key" name="secret_key" value="{{ plain }}">
+        {% else %}
+            <input type="text" class="form-control" id="secret_key" name="secret_key">
+        {% endif %}
+    </div>
+
+    <div class="form-group">
+        <label for="type">Type</label>
+        <select class="form-control" name="type" id="type">
+            <option value="1">Encrypter</option>
+            <option value="2">Décrypter</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Envoyer</button>
+
+    <div class="form-group">
+        {% if hash is defined %}
+            Résultat : {{ hash }}
+        {% endif %}
+    </div>
+{% endblock %}

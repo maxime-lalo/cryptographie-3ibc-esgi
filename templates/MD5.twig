@@ -1,0 +1,49 @@
+{% extends 'template.twig' %}
+{% block form %}
+    <div class="form-group">
+        <label for="md5">Votre texte en clair</label>
+        {% if plain is defined %}
+            <textarea class="form-control" id="md5" name="md5">{{ plain }}</textarea>
+        {% else %}
+            <textarea class="form-control" id="md5" name="md5"></textarea>
+        {% endif %}
+    </div>
+    <div class="form-group">
+        <label for="file">Ou uploader un fichier</label>
+        <input type="file" class="form-control" id="file" name="file" onchange="readFile('md5')">
+    </div>
+    <button type="submit" class="btn btn-primary">Hasher en md5</button>
+    {% if hash is defined %}
+        <div class="form-group" style="margin-top: 20px;">
+            <label for="textval">Résultat du hash :</label>
+            <textarea class="form-control" id="my-textarea">{{ hash }}</textarea>
+        </div>
+        <div class="form-group">
+            <button type="button" onclick="download('hash_md5')" class="btn btn-primary">Sauvegarder</button>
+        </div>
+    {% endif %}
+
+<script>
+    function readFile(textarea_name){
+        let input = document.getElementById('file');
+        let textarea = document.getElementById(textarea_name);
+
+        let files = input.files; 
+
+        if (files.length == 0) return; 
+        const file = files[0]; 
+
+        let reader = new FileReader(); 
+
+        reader.onload = (e) => { 
+            const file = e.target.result; 
+
+            const lines = file.split(/\r\n|\n/); 
+            textarea.value = lines.join('\n'); 
+            $('#form-crypto').submit();
+        };
+        reader.onerror = (e) => alert(e.target.error.name); 
+        reader.readAsText(file); 
+    }
+</script>
+{% endblock %}

@@ -1,0 +1,50 @@
+{% extends 'template.twig' %}
+{% block form %}
+    <div> 
+        <label for="generate">Générer votre clé privé/publique en entrant une passphrase</label>
+        {% if privatekey is defined %}
+            <input type="text" class="form-control" id="privatekey" name="privatekey" value="{{ privatekey }}">
+            <input type="text" class="form-control" id="publickey" name="publickey" value="{{ publickey }}">
+        {% else %}
+            <input type="text" class="form-control" id="passphrase" name="passphrase">
+            <button type="submit" class="btn btn-primary">Envoyer</button>
+        {% endif %}
+    </div>
+
+    <div class="form-group">
+        <label for="rsa">Votre texte</label>
+    </div>
+    <div class="form-group">
+        <label for="rsa">Votre texte</label>
+        {% if plain is defined %}
+            <input type="text" class="form-control" id="plain" name="plain" value="{{ plain }}">
+        {% else %}
+            <input type="text" class="form-control" id="plain" name="plain">
+        {% endif %}
+    </div>
+
+    <div class="form-group">
+        <label for="secret_key">Votre clé</label>
+        {% if plain is defined %}
+            <input type="text" class="form-control" id="key" name="key" value="{{ key }}">
+        {% else %}
+            <input type="text" class="form-control" id="key" name="key">
+        {% endif %}
+    </div>
+
+    <div class="form-group">
+        <label for="type">Type</label>
+        <select class="form-control" name="type" id="type">
+            <option value="1">Encrypter</option>
+            <option value="2">Décrypter</option>
+        </select>
+    </div>
+
+    <button type="submit" class="btn btn-primary">Envoyer</button>
+
+    <div class="form-group">
+        {% if res is defined %}
+            Résultat : {{ res }}
+        {% endif %}
+    </div>
+{% endblock %}

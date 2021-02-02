@@ -1,0 +1,21 @@
+{% extends 'template.twig' %}
+{% block form %}
+    <div class="form-group">
+        <label for="sha3512">Votre texte en clair</label>
+        {% if plain is defined %}
+            <textarea class="form-control" id="sha3512" name="sha3512">{{ plain }}</textarea>
+        {% else %}
+            <textarea class="form-control" id="sha3512" name="sha3512"></textarea>
+        {% endif %}
+    </div>
+    <button type="submit" class="btn btn-primary">Hasher en SHA3-512</button>
+    {% if hash is defined %}
+        <div class="form-group" style="margin-top: 20px;">
+            <label for="textval">Résultat du hash :</label>
+            <textarea class="form-control" id="my-textarea">{{ hash }}</textarea>
+        </div>
+        <div class="form-group">
+            <button type="button" onclick="download('hash_sha3-512')" class="btn btn-primary">Sauvegarder</button>
+        </div>
+    {% endif %}
+{% endblock %}
