@@ -18,6 +18,7 @@
   "homepage": "https://github.com/maxime-lalo/cryptographie-3ibc-esgi#readme",
   "dependencies": {
     "aes-js": "^3.1.2",
+    "body-parser": "^1.19.0",
     "bootstrap": "^4.6.0",
     "crypto-js": "^4.0.0",
     "express": "^4.17.1",
