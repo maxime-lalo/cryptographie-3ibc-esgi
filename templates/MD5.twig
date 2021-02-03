@@ -1,7 +1,8 @@
 {% extends 'template.twig' %}
 {% block form %}
+    <h3>Hasher une chaîne de caractères</h3>
     <div class="form-group">
-        <label for="md5">Votre texte en clair</label>
+        <h4><label for="md5">Votre texte en clair</label></h4>
         {% if plain is defined %}
             <textarea class="form-control" id="md5" name="md5">{{ plain }}</textarea>
         {% else %}
@@ -9,41 +10,110 @@
         {% endif %}
     </div>
     <div class="form-group">
-        <label for="file">Ou uploader un fichier</label>
-        <input type="file" class="form-control" id="file" name="file" onchange="readFile('md5')">
+        <h4><label for="file">Ou uploader un fichier</label></h4>
+        <input type="file" class="form-control-file" id="file" name="file" onchange="readFile('md5')">
     </div>
     <button type="submit" class="btn btn-primary">Hasher en md5</button>
     {% if hash is defined %}
-        <div class="form-group" style="margin-top: 20px;">
-            <label for="textval">Résultat du hash :</label>
+        <div class="form-group mt-2">
+            <h4><label for="textval">Résultat du hash :</label></h4>
             <textarea class="form-control" id="my-textarea">{{ hash }}</textarea>
         </div>
         <div class="form-group">
             <button type="button" onclick="download('hash_md5')" class="btn btn-primary">Sauvegarder</button>
         </div>
     {% endif %}
+{% endblock %}
+
+{% block content %}
+    <hr>
+    <h3>Comparer les checksum</h3>
+    <form method="POST" id="form-crypto2">
+        <div class="row mt-3">
+            <div class="col">
+                <h4><label for="fileCompare1">Fichier à comparer 1</label></h4>
+                <input type="file" class="form-control-file" id="fileCompare1" name="fileCompare1" onchange="readFileCompare()">
+                <textarea style="display:none;" id="compare1" name="compare1"></textarea>
+            </div>
+            <div class="col">
+                <h4><label for="fileCompare2">Fichier à comparer 2</label></h4>
+                <input type="file" class="form-control-file" id="fileCompare2" name="fileCompare2" onchange="readFileCompare()">
+                <textarea style="display:none;" id="compare2" name="compare2"></textarea>
+            </div>
+        </div>
+
+        {% if hashCompare1 is defined %}
+            <div class="row mb-4 mt-4">
+                <div class="col">
+                    <h4><label for="textval">Résultat du hash 1 :</label></h4>
+                    <textarea class="form-control" id="resultHash">{{ hashCompare1 }}</textarea>
+                </div>
+                <div class="col">
+                    <h4><label for="textval">Résultat du hash 2 :</label></h4>
+                    <textarea class="form-control" id="resultHash">{{ hashCompare2 }}</textarea>
+                </div>
+            </div>
+        {% endif %}
+
+        {% if result is defined %}
+            {% if result == "Identique" %}
+                <div class="alert alert-success" role="alert">
+                    Résultat de la comparaison :
+                    {{ result }}
+                </div>
+            {% else %}
+                <div class="alert alert-danger" role="alert">
+                    Résultat de la comparaison :
+                    {{ result }}
+                </div>
+            {% endif %}
+        {% endif %}
+    </form>
+
 
 <script>
-    function readFile(textarea_name){
-        let input = document.getElementById('file');
-        let textarea = document.getElementById(textarea_name);
+    function readFileCompare(){
+        let input1 = document.getElementById('fileCompare1');
+        let files1 = input1.files; 
+        let textarea1 = document.getElementById('compare1');
 
-        let files = input.files; 
+        let input2 = document.getElementById('fileCompare2');
+        let files2 = input2.files;
+        let textarea2 = document.getElementById('compare2');
 
-        if (files.length == 0) return; 
-        const file = files[0]; 
+        let resultCompare = document.getElementById('resultCompare');
 
-        let reader = new FileReader(); 
+        if (files1.length == 0) return; 
+        if (files2.length == 0) return;
 
-        reader.onload = (e) => { 
-            const file = e.target.result; 
+        const file1 = files1[0]; 
+        let reader1 = new FileReader(); 
 
-            const lines = file.split(/\r\n|\n/); 
-            textarea.value = lines.join('\n'); 
-            $('#form-crypto').submit();
+        const file2 = files2[0];
+        let reader2 = new FileReader();
+
+        reader1.onload = (e) => { 
+            const file1 = e.target.result;
+            const lines1 = file1.split(/\r\n|\n/); 
+            console.log(lines1);
+            textarea1.value = lines1.join('\n'); 
+
+            reader2.onload = (e) => { 
+                const file2 = e.target.result;
+                const lines2 = file2.split(/\r\n|\n/); 
+                console.log(lines2);
+                textarea2.value = lines2.join('\n'); 
+                 
+                $('#form-crypto2').submit();
+            };
         };
-        reader.onerror = (e) => alert(e.target.error.name); 
-        reader.readAsText(file); 
+        reader1.onerror = (e) => alert(e.target.error.name); 
+        reader1.readAsText(file1);
+        
+        reader2.onerror = (e) => alert(e.target.error.name); 
+        reader2.readAsText(file2);
+        
     }
 </script>
+
 {% endblock %}

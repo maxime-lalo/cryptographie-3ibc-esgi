@@ -9,6 +9,10 @@
         {% endif %}
     </div>
     <div class="form-group">
+        <label for="file">Ou uploader un fichier</label>
+        <input type="file" class="form-control-file" id="file" name="file" onchange="readFile('aes')">
+    </div>
+    <div class="form-group">
         <label for="key">Votre clé</label>
         {% if key is defined %}
             <textarea class="form-control" id="key" name="key" value="{{ key }}"></textarea>
@@ -38,5 +42,4 @@
         <button type="button" onclick="download('key-aes')" class="btn btn-primary">Sauvegarder</button>
     </div>
     {% endif %}
-
 {% endblock %}

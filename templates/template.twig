@@ -3,9 +3,12 @@
 <head>
     <title>ESGI Crypto</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/css/bootstrap-theme.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.1/js/bootstrap.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+
 </head>
 
 <body>
@@ -17,6 +20,9 @@
                     {% block form %}
                     {% endblock %}
                 </form>
+
+                {% block content %}
+                {% endblock %}
             </div>
         </div>
     </div>
@@ -34,8 +40,38 @@
             anchor.click();
             document.body.removeChild(anchor);
         }
+
+        function readFile(textarea_name){
+            let input = document.getElementById('file');
+            let textarea = document.getElementById(textarea_name);
+
+            let files = input.files; 
+
+            if (files.length == 0) return; 
+            const file = files[0]; 
+
+            let reader = new FileReader(); 
+
+            reader.onload = (e) => { 
+                const file = e.target.result; 
+
+                const lines = file.split(/\r\n|\n/); 
+                textarea.value = lines.join('\n'); 
+                $('#form-crypto').submit();
+            };
+            reader.onerror = (e) => alert(e.target.error.name); 
+            reader.readAsText(file); 
+        }
     </script>
 
 </body>
-
+<!-- Footer -->
+<footer class="bg-dark text-center text-lg-start fixed-bottom">
+	<!-- Copyright -->
+<div class="text-center text-light bg-dark p-3">
+		© 2020 Copyright: L.PV. All right reserved
+	</div>
+	<!-- Copyright -->
+</footer>
+<!-- Footer -->
 </html>

@@ -1,70 +1,97 @@
-<nav class="navbar navbar-inverse navbar-static-top">
-            <div class="container">
-                <a class="navbar-brand" href="/">ESGI Crypto</a>
-                <ul class="nav navbar-nav">
-                    {% if url is defined and url == "home" %}
-                        <li class="active">
-                    {% else %}
-                        <li>
-                    {% endif %}
-                        <a href="/">Accueil</a>
-                    </li>
-                    {% if url is defined and url == "md5" %}
-                        <li class="active">
-                    {% else %}
-                        <li>
-                    {% endif %}
-                        <a href="/md5">MD5</a>
-                    </li>
-                    {% if url is defined and url == "sha2-256" %}
-                        <li class="active">
-                    {% else %}
-                        <li>
-                    {% endif %}
-                        <a href="/sha2-256">SHA2-256</a>
-                    </li>
-                    {% if url is defined and url == "sha3-512" %}
-                        <li class="active">
-                    {% else %}
-                        <li>
-                    {% endif %}
-                        <a href="/sha3-512">SHA3-512</a>
-                    </li>
-                    {% if url is defined and url == "keccak-512" %}
-                        <li class="active">
-                    {% else %}
-                        <li>
-                    {% endif %}
-                        <a href="/Keccak-512">Keccak-512</a> 
-                    </li>
-                    {% if url is defined and url == "ripemd160" %}
-                        <li class="active">
-                    {% else %}
-                        <li>
-                    {% endif %}
-                        <a href="/RipeMD160">RipeMD160</a>
-                    </li>
-                    {% if url is defined and url == "aes" %}
-                        <li class="active">
-                    {% else %}
-                        <li>
-                    {% endif %}
-                        <a href="/AES">AES</a>
-                    </li>
-                    {% if url is defined and url == "rsa" %}
-                        <li class="active">
-                    {% else %}
-                        <li>
-                    {% endif %}
-                        <a href="/RSA">RSA</a>
-                    </li>
-                    {% if url is defined and url == "blowfish" %}
-                        <li class="active">
-                    {% else %}
-                        <li>
-                    {% endif %}
-                        <a href="/BlowFish">BlowFish</a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-3">
+	<div class="container">
+		<a class="navbar-brand" href="/">ESGI Crypto</a>
+		<div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+			<div class="navbar-nav">
+				{% if url is defined and url == "home" %}
+					<a class="nav-item nav-link active" href="/">Accueil<span class="sr-only">(current)</span>
+					</a>
+				{% else %}
+					<a class="nav-item nav-link" href="/">Accueil<span class="sr-only">(current)</span>
+					</a>
+				{% endif %}
+
+				{% if url is defined and url == "md5" %}
+					<a class="nav-item nav-link active" href="/md5">MD5<span class="sr-only">(current)</span>
+					</a>
+				{% else %}
+					<a class="nav-item nav-link" href="/md5">MD5<span class="sr-only">(current)</span>
+					</a>
+				{% endif %}
+
+				{% if url is defined and url == "sha2-256" %}
+					<a class="nav-item nav-link active" href="/sha2-256">SHA2-256<span class="sr-only">(current)</span>
+					</a>
+				{% else %}
+					<a class="nav-item nav-link" href="/sha2-256">SHA2-256<span class="sr-only">(current)</span>
+					</a>
+				{% endif %}
+
+				{% if url is defined and url == "sha3-512" %}
+					<a class="nav-item nav-link active" href="/sha3-512">SHA3-512<span class="sr-only">(current)</span>
+					</a>
+				{% else %}
+					<a class="nav-item nav-link" href="/sha3-512">SHA3-512<span class="sr-only">(current)</span>
+					</a>
+				{% endif %}
+
+				{% if url is defined and url == "keccak-512" %}
+					<a class="nav-item nav-link active" href="/Keccak-512">Keccak-512<span class="sr-only">(current)</span>
+					</a>
+				{% else %}
+					<a class="nav-item nav-link" href="/Keccak-512">Keccak-512<span class="sr-only">(current)</span>
+					</a>
+				{% endif %}
+
+				{% if url is defined and url == "ripemd160" %}
+					<a class="nav-item nav-link active" href="/RipeMD160">RipeMD160<span class="sr-only">(current)</span>
+					</a>
+				{% else %}
+					<a class="nav-item nav-link" href="/RipeMD160">RipeMD160<span class="sr-only">(current)</span>
+					</a>
+				{% endif %}
+
+				{% if url is defined and url == "aes" %}
+					<a class="nav-item nav-link active" href="/AES">AES<span class="sr-only">(current)</span>
+					</a>
+				{% else %}
+					<a class="nav-item nav-link" href="/AES">AES<span class="sr-only">(current)</span>
+					</a>
+				{% endif %}
+
+				{% if url is defined and url == "rsa" %}
+					<a class="nav-item nav-link active" href="/RSA">RSA<span class="sr-only">(current)</span>
+					</a>
+				{% else %}
+					<a class="nav-item nav-link" href="/RSA">RSA<span class="sr-only">(current)</span>
+					</a>
+				{% endif %}
+
+				{% if url is defined and url == "blowfish" %}
+					<a class="nav-item nav-link active" href="/BlowFish">BlowFish<span class="sr-only">(current)</span>
+					</a>
+				{% else %}
+					<a class="nav-item nav-link" href="/BlowFish">BlowFish<span class="sr-only">(current)</span>
+					</a>
+				{% endif %}
+
+				{% if url is defined and url == "signup" %}
+					<a class="nav-item nav-link active" href="/signup">S'enregistrer<span class="sr-only">(current)</span>
+					</a>
+				{% else %}
+					<a class="nav-item nav-link" href="/signup">S'enregistrer<span class="sr-only">(current)</span>
+					</a>
+				{% endif %}
+
+				{% if url is defined and url == "signin" %}
+					<a class="nav-item nav-link active" href="/signin">Se connecter<span class="sr-only">(current)</span>
+					</a>
+				{% else %}
+					<a class="nav-item nav-link" href="/signin">Se connecter<span class="sr-only">(current)</span>
+					</a>
+				{% endif %}
+
+			</div>
+		</div>
+	</div>
+</nav>

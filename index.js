@@ -12,6 +12,19 @@ const Blowfish = require('egoroof-blowfish');
 const NodeRSA = require('node-rsa');
 const cryptico = require('cryptico')
 
+const loginKey = "Afih5D87&m%";
+/**
+ * MySQL connection
+ */
+const mysql = require('mysql');
+var connection = mysql.createConnection({
+    host: 'localhost',
+    user: 'root',
+    port: '3308',
+    password: '',
+    database: 'crypto'
+});
+connection.connect();
 
 var fs = require('fs');
 
@@ -19,6 +32,80 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.set('views', 'templates');
 app.set('view engine', 'html');
 app.engine('html', twig.__express);
+
+
+/**
+ * Routes pour le signup
+ */
+app.get('/signup', signup);
+app.post('/signup',signup);
+
+function signup(req, res){
+    if(req.method == "GET"){
+        res.render(path.join(__dirname + '/templates/signup.twig'), { 'url': 'signup' });
+    }else{
+        connection.query('SELECT * FROM user', function (error, results, fields) {
+            var alreadyExists = false;
+            var plainEmail = req.body.email;
+            var encryptedEmail = CryptoJS.AES.encrypt(JSON.stringify(plainEmail), loginKey).toString();
+
+            for (var i = 0; i < results.length; i++) {
+                var emailDb = CryptoJS.AES.decrypt(results[i].email, key);
+                var decryptedEmail = JSON.parse(emailDb.toString(CryptoJS.enc.Utf8));
+                if (decryptedEmail == plainEmail) {
+                    alreadyExists = true;
+                }
+            }
+
+            if(alreadyExists){
+                res.render(path.join(__dirname + '/templates/signup.twig'), { 'url': 'signup', 'error': 'Ce compte existe déjà' });
+            }else{
+                connection.query('INSERT INTO user (email,password) VALUES ("' + encryptedEmail + '","' + sha3_512(req.body.password) + '")', (error, results, fields) => {
+                    res.render(path.join(__dirname + '/templates/signup.twig'), { 'url': 'signup', 'info': 'Vous avez bien été inscrit' });
+                });
+            }
+        });
+    }
+}
+
+/**
+ * Routes pour le sign-in
+ */
+app.get('/signin', signin);
+app.post('/signin', signin);
+
+function signin(req, res) {
+    if(req.method == "GET"){
+         res.render(path.join(__dirname + '/templates/signin.twig'), { 'url': 'signin' });
+    }else{  
+        connection.query('SELECT * FROM user', function (error, results, fields) {
+            var userFound = false;
+            var plainEmail = req.body.email;
+            var encryptedEmail = CryptoJS.AES.encrypt(JSON.stringify(plainEmail), loginKey).toString();
+
+            for (var i = 0; i < results.length; i++) {
+                var emailDb = CryptoJS.AES.decrypt(results[i].email, loginKey);
+                var decryptedEmail = JSON.parse(emailDb.toString(CryptoJS.enc.Utf8));
+                if (decryptedEmail == plainEmail) {
+                    userFound = true;
+                    user = results[i];
+                }
+            }
+
+            if (userFound) {
+                var hashedPassword = sha3_512(req.body.password);
+
+                if(hashedPassword == user.password){
+                    res.render(path.join(__dirname + '/templates/signup.twig'), { 'url': 'signup', 'info': 'Connexion réussie'});
+                }else{
+                    res.render(path.join(__dirname + '/templates/signup.twig'), { 'url': 'signup', 'error': 'Le mot de passe est incorrect' }); 
+                }
+            } else {
+                res.render(path.join(__dirname + '/templates/signup.twig'), { 'url': 'signup', 'error': 'Ce compte n\'existe pas'});
+            }
+        });
+    }
+}
 
 /**
  * Routes pour l'index
@@ -37,11 +124,33 @@ app.get('/MD5', function (req, res) {
 });
 
 app.post('/MD5', function (req, res) {
-    res.render(path.join(__dirname + '/templates/MD5.twig'), { 
-        'plain': req.body.md5, 
-        'hash': CryptoJS.MD5(req.body.md5),
-        'url' : 'md5'
-    });
+    // Si fileCompare1 existe
+    if (req.body.fileCompare1){
+        // Si on veut comparer les checksum
+
+        var hash1 = CryptoJS.MD5(req.body.compare1).toString();
+        var hash2 = CryptoJS.MD5(req.body.compare2).toString();
+
+        if(hash1 == hash2){
+            var result = "Identique";
+        }else{
+            var result = "Pas identique";
+        }
+
+        res.render(path.join(__dirname + '/templates/MD5.twig'), {
+            'url': 'md5',
+            'hashCompare1': hash1,
+            'hashCompare2': hash2,
+            'result' : result
+        });
+    } else{
+        // Si on veut hasher en md5
+        res.render(path.join(__dirname + '/templates/MD5.twig'), {
+            'plain': req.body.md5,
+            'hash': CryptoJS.MD5(req.body.md5),
+            'url': 'md5'
+        });
+    }
 });
 
 /**
@@ -156,16 +265,66 @@ app.post('/RSA', function (req, res) {
     if (req.body.passphrase != "") {
         var passphrase = req.body.passphrase ; 
         var bits = 1024 ; 
-        
+        var rsa_key = cryptico.generateRSAKey(passphrase, bits); 
+        var public_key = cryptico.publicKeyString(rsa_key);
+
+        if (req.body.type == "1"){
+            var result = cryptico.encrypt(req.body.plain, req.body.key)
+            
+            res.render(path.join(__dirname + '/templates/RSA.twig'), {
+                'url': 'rsa',
+                'result' : result.cipher,
+                'plain' : req.body.plain, 
+                'key' : req.body.key,
+                'passphrase' : passphrase, 
+                'public_key' : public_key,
+            });
+        } else if (req.body.type == "2"){
+            var result = cryptico.decrypt(req.body.plain, cryptico.generateRSAKey(req.body.key, bits))
+            
+            res.render(path.join(__dirname + '/templates/RSA.twig'), {
+                'url': 'rsa',
+                'result' : result.plaintext,
+                'plain' : req.body.plain, 
+                'key' : req.body.key,
+                'passphrase' : passphrase, 
+                'public_key' : public_key,
+            });
+        } else {
+            res.render(path.join(__dirname + '/templates/RSA.twig'), {
+                'url': 'rsa',
+                'passphrase' : passphrase, 
+                'public_key' : public_key, 
+            });
+        }
+         
+    } else { 
+        if (req.body.type == "1"){
+            var result = cryptico.encrypt(req.body.plain, req.body.key)
+            
+            res.render(path.join(__dirname + '/templates/RSA.twig'), {
+                'url': 'rsa',
+                'result' : result.cipher,
+                'plain' : req.body.plain, 
+                'key' : req.body.key,
+                'passphrase' : passphrase, 
+                'public_key' : public_key,
+            });
+        } else if (req.body.type == "2"){
+            var result = cryptico.decrypt(req.body.plain, cryptico.generateRSAKey(req.body.key, bits))
+            
+            res.render(path.join(__dirname + '/templates/RSA.twig'), {
+                'url': 'rsa',
+                'result' : result.plaintext,
+                'plain' : req.body.plain, 
+                'key' : req.body.key,
+                'passphrase' : passphrase, 
+                'public_key' : public_key,
+            });
+        }
     }
 
-    var plain = req.body.rsa; 
-    var key = req.body.key;
-    const RSA = new NodeRSA()
-
-    res.render(path.join(__dirname + '/templates/RSA.twig'), {
-        'url': 'rsa'
-    });
+    
 });
 
 /**
@@ -178,21 +337,22 @@ app.get('/BlowFish', function (req, res) {
 });
  
 app.post('/BlowFish', function (req, res) {
-    const bf = new Blowfish(req.body.secret_key, Blowfish.MODE.ECB, Blowfish.PADDING.NULL);
-    
-    // Si type = 1 on encrypte sinon on décrypte
-    if(req.body.type == "1"){
-        var result = bf.encode(req.body.blowfish, Blowfish.TYPE.STRING);
-        console.log(bf.decode(result,Blowfish.TYPE.STRING));
-    }else{
-        var result = bf.decode(req.body.blowfish, Blowfish.TYPE.STRING);
+    const bf = new Blowfish(req.body.key, Blowfish.MODE.ECB, Blowfish.PADDING.NULL)
+
+    if (req.body.type == "1"){
+        var encrypted = bf.encode(req.body.plain);
+        res.render(path.join(__dirname + '/templates/BlowFish.twig'),{  
+            'url' : 'blowfish',
+            'result' : encrypted
+        });
+    } else {
+        var decrypted = bf.decode(req.body.plain, Blowfish.TYPE.STRING);
+        res.render(path.join(__dirname + '/templates/BlowFish.twig'),{  
+            'url' : 'blowfish', 
+            'result' : decrypted
+        });
     }
 
-    res.render(path.join(__dirname + '/templates/BlowFish.twig'),{
-        'url' : 'blowfish',
-        'plain' : req.body.blowfish,
-        'hash' : result
-    });
 });
 
 /**
